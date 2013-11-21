@@ -6,63 +6,70 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Security.Cryptography;
 
+
+/**
+ * Default key size is 256bits
+ */
 namespace AES_BlockCipher
 {
     public class AES_Rijndael
     {
-        public StringBuilder Encryption(string data)
+        private RijndaelManaged myRijndael = new RijndaelManaged();
+        
+        // Create an RijndaelManaged object 
+        // with the specified key and IV. 
+        public AES_Rijndael(int keySize, string mode)
+        {
+            myRijndael.KeySize = keySize;
+            myRijndael.GenerateKey();
+            myRijndael.GenerateIV();
+
+            // TODO: option for other mode
+            myRijndael.Mode = CipherMode.ECB;
+            // TODO: study other options for padding 
+            myRijndael.Padding = PaddingMode.Zeros;
+        }
+
+        public string Encryption(string data)
         {
             StringBuilder output = new StringBuilder("");
-
-            using (RijndaelManaged myRijndael = new RijndaelManaged())
-            {
-                myRijndael.GenerateKey();
-                myRijndael.GenerateIV();
-                // Encrypt the string to an array of bytes. 
-                byte[] encrypted = EncryptStringToBytes(data, myRijndael.Key, myRijndael.IV);
-
-                foreach(var b in encrypted)
-                {
-                    output.Append(b.ToString("x"));
-                }
-            }
-
-            return output;
-        }
-
-        private byte[] EncryptStringToBytes(string plainText, byte[] Key, byte[] IV)
-        {
+            
+            // Create a encrytor to perform the stream transform.
+            ICryptoTransform encryptor = myRijndael.CreateEncryptor(myRijndael.Key, myRijndael.IV);
+            // Encrypt the string to an array of bytes.
             byte[] encrypted;
-            // Create an RijndaelManaged object 
-            // with the specified key and IV. 
-            using (RijndaelManaged rijAlg = new RijndaelManaged())
+            // Create the streams used for encryption. 
+            using (MemoryStream msEncrypt = new MemoryStream())
             {
-                rijAlg.Key = Key;
-                rijAlg.IV = IV;
-                rijAlg.Mode = CipherMode.ECB;
-                rijAlg.Padding = PaddingMode.Zeros;
-
-                // Create a decrytor to perform the stream transform.
-                ICryptoTransform encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
-
-                // Create the streams used for encryption. 
-                using (MemoryStream msEncrypt = new MemoryStream())
+                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                     {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                        {
-
-                            //Write all data to the stream.
-                            swEncrypt.Write(plainText);
-                        }
-                        encrypted = msEncrypt.ToArray();
+                        //Write all data to the stream.
+                        swEncrypt.Write(data);
                     }
+                    encrypted = msEncrypt.ToArray();
                 }
             }
+            foreach(var b in encrypted)
+            {
+                output.Append(b.ToString("x")); // in hex format
+            }
 
-            return encrypted;
+            return output.ToString();
         }
+
+        public string getKey()
+        {
+            StringBuilder key = new StringBuilder("");
+            byte[] rawKey = myRijndael.Key;
+            foreach (var k in rawKey)
+            {
+                key.Append(k.ToString("x")); // in hex format
+            }
+            return key.ToString();
+        }
+
     }
 
 
@@ -74,13 +81,18 @@ namespace AES_BlockCipher
 
             var input = new StreamReader(plaintext);
             string data = input.ReadToEnd();
-
-            AES_Rijndael ciphertext = new AES_Rijndael();
-            StringBuilder output = ciphertext.Encryption(data);
-
-
-            Console.WriteLine(output.ToString());
             input.Close();
+
+            int keySize = 256;
+            string mode = "ECB";
+            AES_Rijndael ciphertext = new AES_Rijndael(keySize, mode);
+            string output = ciphertext.Encryption(data);
+            string key = ciphertext.getKey();
+
+            Console.WriteLine("Cipher:\n" + output);
+            Console.WriteLine("Key:\n" + key);
+
+            
         }
     }
 }
