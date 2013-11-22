@@ -66,9 +66,11 @@ public class AES {
 				System.out.print(String.format("%x", b));
 			}
 			System.out.println();
+			
+			// The difference between solution above and down !!!!!
 			for(byte b : ciphertext)
 			{
-				System.out.print(String.format("%02x", b&0xff));
+				System.out.print(String.format("%02x", b));
 			}
 		} catch (IllegalBlockSizeException e) {
 			// TODO Auto-generated catch block
