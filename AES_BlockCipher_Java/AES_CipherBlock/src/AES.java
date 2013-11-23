@@ -1,5 +1,6 @@
 
 import java.io.*;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
@@ -7,7 +8,7 @@ import javax.crypto.*;
 
 public class AES {
 	protected BufferedReader is = null;
-	
+
 	public String getContent(String fileName)
 	{
 		FileInputStream input = null;
@@ -72,6 +73,14 @@ public class AES {
 			{
 				System.out.print(String.format("%02x", b));
 			}
+			System.out.println();
+			
+			// Better way ...
+			BigInteger bi = new BigInteger(1, ciphertext);
+			String result = String.format("%0" + (ciphertext.length<<1) + "X", bi);
+			System.out.print(result);
+			
+			
 		} catch (IllegalBlockSizeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,7 +99,6 @@ public class AES {
 		System.out.println(content.toString());
 		
 		encryption.Encryption("plaintext.txt");
-		
 		
 	}
 
