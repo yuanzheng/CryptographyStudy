@@ -1,7 +1,4 @@
-/**
- * AES
- * Block Cipher Modes: ECB, 
- */
+
 import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -11,6 +8,13 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 import javax.crypto.*;
+
+/**
+ * @author SongYz
+ * This program provide the AES	functions for encryption and decryption in different Block Cipher modes
+ * 
+ * Block Cipher Modes: ECB, 
+ */
 
 public class AES {
 	protected BufferedReader is = null;
@@ -59,7 +63,7 @@ public class AES {
 		}
 	}
 	
-	// initialize AES key
+	// initialize AES key, and generate AES key
 	public AES(int keySize)
 	{
 		try {
@@ -99,23 +103,17 @@ public class AES {
 			
 			
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(" No Such Algorithm exists " + e);
 		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(" Invalid Key " + e);
 		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(" Illegal Block Size " + e);
 		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(" Bad Padding " + e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(" Cannot find the path " +e);
 		}
 	    
 	    return ciphertext;
