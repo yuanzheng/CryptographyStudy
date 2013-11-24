@@ -82,10 +82,10 @@ public class AES {
 	 * AES/ECB/NoPadding (128)
 	 * AES/ECB/PKCS5Padding (128)
 	 */	
-	public void Encryption(String fileName, String mode)
+	public byte[] Encryption(String fileName, String mode)
 	{
 		//String content = getContent(fileName);
-		
+		byte[] ciphertext = null;
 	    try {
 	    	Cipher aesCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			// Initialize the cipher for encryption
@@ -93,9 +93,10 @@ public class AES {
 			// get file location
 			Path path = Paths.get(fileName);
 			byte[] data = Files.readAllBytes(path);
-			byte[] ciphertext = aesCipher.doFinal(data);//(content.getBytes());
+			ciphertext = aesCipher.doFinal(data);//(content.getBytes());
 			
-			printCipherText(ciphertext);
+			
+			
 			
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
@@ -116,17 +117,41 @@ public class AES {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	    
+	    return ciphertext;
 	}
 	
 	
 	// TODO
-	public void Decryption()
+	public String Decryption(byte[] ciphertext, String mode)
 	{
+		String plaintext = "";
+		try {
+			Cipher aesCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			// Initialize the cipher for encryption
+			aesCipher.init(Cipher.DECRYPT_MODE, aesKey);
+			byte[] plainData = aesCipher.doFinal(ciphertext);
+			// convert bytes into string
+			plaintext= new String(plainData);
+			
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return plaintext;
 		
 	}
 	
 	private void printCipherText(byte[] ciphertext)
 	{
+		//System.out.println();
 		/*
 		for(byte b : ciphertext)
 		{
@@ -144,22 +169,28 @@ public class AES {
 		// Better way ...
 		BigInteger bi = new BigInteger(1, ciphertext);
 		String result = String.format("%0" + (ciphertext.length<<1) + "X", bi);
-		System.out.print(result);
+		System.out.println(result);
 		
 	}
-        
+	
+	
 	public static void main(String[] args)
 	{
 		int size = 128;
 		AES encryption = new AES(size);
 		// TEST read file correctly
 		String content = encryption.getContent("plaintext.txt");
-		System.out.println(content.toString());
+		//System.out.println(content.toString());
 		encryption.printFile("plaintext.txt");
 		
 		// Encrypt Message
-		encryption.Encryption("plaintext.txt", "ECB");
+		byte[] ciphertext = encryption.Encryption("plaintext.txt", "ECB");
+		System.out.println("Cipher Text:");
+		encryption.printCipherText(ciphertext);
 		
+		String plaintext = encryption.Decryption(ciphertext, "ECB");
+		System.out.println("Plain Text:");
+		System.out.println(plaintext);
 	}
 
 }
