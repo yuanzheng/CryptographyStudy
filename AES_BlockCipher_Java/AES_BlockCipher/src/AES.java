@@ -4,6 +4,9 @@
  */
 import java.io.*;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
@@ -20,13 +23,14 @@ public class AES {
 		try{
 			File file = new File(fileName);
 			input = new FileInputStream(file);
+			
 		} catch (Exception e)
 		{
 			
 		}
 		BufferedInputStream bis = new BufferedInputStream(input);
 		Scanner scanner = new Scanner(bis);
-
+		
 		StringBuilder content = new StringBuilder();
 		while (scanner.hasNextLine()) {
 			content.append(scanner.nextLine());
@@ -80,13 +84,16 @@ public class AES {
 	 */	
 	public void Encryption(String fileName, String mode)
 	{
-		String content = getContent(fileName);
+		//String content = getContent(fileName);
 		
 	    try {
 	    	Cipher aesCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			// Initialize the cipher for encryption
 			aesCipher.init(Cipher.ENCRYPT_MODE, aesKey);
-			byte[] ciphertext = aesCipher.doFinal(content.getBytes());
+			// get file location
+			Path path = Paths.get(fileName);
+			byte[] data = Files.readAllBytes(path);
+			byte[] ciphertext = aesCipher.doFinal(data);//(content.getBytes());
 			
 			printCipherText(ciphertext);
 			
@@ -105,6 +112,9 @@ public class AES {
 		} catch (BadPaddingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -117,6 +127,7 @@ public class AES {
 	
 	private void printCipherText(byte[] ciphertext)
 	{
+		/*
 		for(byte b : ciphertext)
 		{
 			System.out.print(String.format("%x", b));
@@ -129,7 +140,7 @@ public class AES {
 			System.out.print(String.format("%02x", b));
 		}
 		System.out.println();
-		
+		*/
 		// Better way ...
 		BigInteger bi = new BigInteger(1, ciphertext);
 		String result = String.format("%0" + (ciphertext.length<<1) + "X", bi);
