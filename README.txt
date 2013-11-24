@@ -14,3 +14,4 @@ Both ciphertext and key are in Hexdecimal.
 First sample in is ECB mode, ECB is not considered secure, because it doesn't use an initialization vector to initicalize the first plaintext block. For a given secret key k, a simple block cipher that does not use an initialization vector will encrypt the same input block of plaintext into the same output block of ciphertext. Therefore, if you have duplicate blocks in your input plaintext stream, you will have duplicate blocks in your output ciphertext stream. These duplicate output blocks alert unauthorized users to the weak encryption used the algorithms that might have been employed, and the possible modes of attack. The ECB cipher mode is therefore quite vulnerable to analysis, and ultimately, key discovery.
 
 
+2. AES_BlockCipher (in Java)
