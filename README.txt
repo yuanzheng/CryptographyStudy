@@ -1,5 +1,8 @@
 
-Saving some sample codes did in my spare time. They're all about Cryptography.
+Saving some sample codes did in my spare time. They're all about cryptographic algorithms.
+I want to implement the standard and secure cryptographic algorithms in my own version using different programming languages.
+My goal is to implement all cryptographic algorithms by using best practices and patterns. I wish my version is fast.
+
 
 AES (Advanced Encryption Standard)
 1. AES_BlockCipher (in C#)
@@ -15,3 +18,16 @@ First sample in is ECB mode, ECB is not considered secure, because it doesn't us
 
 
 2. AES_BlockCipher (in Java)
+
+
+
+
+
+3. AES_BlockCipher (in Javascript)
+
+
+
+
+
+
+4. AES_BlockCipher (in Python)
